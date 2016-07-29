@@ -1,0 +1,12 @@
+E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.Services\bin\Release\Tools.Services.dll
+E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.Services\bin\Release\Tools.Services.pdb
+E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.Services\bin\Release\Shove.Components.dll
+E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.Services\bin\Release\Shove.dll
+E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.Services\bin\Release\Microsoft.Office.Interop.Excel.dll
+E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.Services\bin\Release\office.dll
+E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.Services\bin\Release\Microsoft.Vbe.Interop.dll
+E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.Services\bin\Release\Microsoft.Office.Interop.Excel.xml
+E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.Services\bin\Release\office.xml
+E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.Services\obj\Release\ResolveAssemblyReference.cache
+E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.Services\obj\Release\Tools.Services.dll
+E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.Services\obj\Release\Tools.Services.pdb
