@@ -17,3 +17,6 @@ E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.WinForm\Tools.WinForm\bin\Debu
 E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.WinForm\Tools.WinForm\obj\x86\Debug\Tools.WinForm.exe
 E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.WinForm\Tools.WinForm\obj\x86\Debug\Tools.WinForm.pdb
 E:\LocalProjects\NetWin.Tools.SpiderWebsite\Tools.WinForm\Tools.WinForm\bin\Debug\Shove.Components.dll
+E:\GitHub\NetWin.Tools.SpiderWebsite\NetWin.Tools.SpiderWebsite\Tools.WinForm\Tools.WinForm\bin\Debug\Tools.WinForm.exe.config
+E:\GitHub\NetWin.Tools.SpiderWebsite\NetWin.Tools.SpiderWebsite\Tools.WinForm\Tools.WinForm\obj\x86\Debug\Tools.WinForm.exe
+E:\GitHub\NetWin.Tools.SpiderWebsite\NetWin.Tools.SpiderWebsite\Tools.WinForm\Tools.WinForm\obj\x86\Debug\Tools.WinForm.pdb
