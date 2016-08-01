@@ -163,7 +163,7 @@ namespace Tools.WinForm
 
                 foreach (var item in primaryUrls)
                 {
-                  var isExistsesult=  DBOperationService.IsExistsPrimaryWebSite(item);
+                    var isExistsesult = DBOperationService.IsExistsPrimaryWebSite(item);
                     if (isExistsesult.Result)
                     {
                         tip += item + ":" + isExistsesult.Message + "\n";
@@ -176,7 +176,7 @@ namespace Tools.WinForm
                 while (primaryUrls.Count > pageIndex * pageSize)
                 {
                     primaryWebSites.Clear();
-                    primaryUrls.Skip(pageIndex*pageSize).Take(pageSize).ToList().ForEach(p =>
+                    primaryUrls.Skip(pageIndex * pageSize).Take(pageSize).ToList().ForEach(p =>
                     {
                         primaryWebSites.Add(new PrimaryWebSiteModel()
                         {
@@ -191,7 +191,7 @@ namespace Tools.WinForm
                     {
                         error += insertResult.Message;
                     }
-                   
+
                     pageIndex++;
                 }
 
@@ -201,7 +201,7 @@ namespace Tools.WinForm
                 if (!string.IsNullOrWhiteSpace(tip))
                     MessageBox.Show(tip);
 
-                  RefreshPrimaryWebSites();//刷新列表
+                RefreshPrimaryWebSites();//刷新列表
 
             }
             catch (Exception exception)
@@ -360,21 +360,24 @@ namespace Tools.WinForm
                             {
                                 string title = string.Empty;
                                 int weights = -1;
-                                var processResult = SpiderController.HtmlProcess(htmlResult.Data, p.WebSiteUrl,
+                                var processResult = SpiderController.HtmlProcess(htmlResult.Data, p.WebSiteUrl, p.Level,
                                     ref title, ref weights);
 
                                 this.Invoke(new Action(() => FormLog(title)));
 
                                 if (processResult.Result)
                                 {
-                                    primarydiDictionary.GetOrAdd(p.ID, processResult.Data);
-                                    targetDictionary.Add(new TargetWebSiteModel()
-                                    {
-                                        PrimaryID = p.ID,
-                                        WebSiteName = title,
-                                        WebSiteUrl = p.WebSiteUrl,
-                                        Weights = weights
-                                    });
+                                    if (p.Level != 0)
+                                        targetDictionary.Add(new TargetWebSiteModel()
+                                        {
+                                            PrimaryID = p.ID,
+                                            WebSiteName = title,
+                                            WebSiteUrl = p.WebSiteUrl,
+                                            Weights = weights
+                                        });
+
+                                    if (p.Level <= Level)
+                                        primarydiDictionary.GetOrAdd(p.ID, processResult.Data);
                                 }
                             }
                             else
@@ -665,7 +668,7 @@ namespace Tools.WinForm
             }
             else
             {
-                 RefreshFilterRuleConfiguration();
+                RefreshFilterRuleConfiguration();
             }
         }
 
@@ -678,7 +681,7 @@ namespace Tools.WinForm
             }
             else
             {
-                 RefreshFilterRuleConfiguration();
+                RefreshFilterRuleConfiguration();
             }
         }
     }

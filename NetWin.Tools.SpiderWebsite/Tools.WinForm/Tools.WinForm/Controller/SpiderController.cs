@@ -43,14 +43,19 @@ namespace Tools.WinForm.Controller
                     {
                         SourceID = item.Key,
                         WebSiteUrl = value,
-                        Level = primaryWebSiteList.Where(p => p.ID == item.Key).Select(p => p.Level + 1).FirstOrDefault(),
+                        Level = primaryWebSites.Where(p => p.ID == item.Key).Select(p => p.Level + 1).FirstOrDefault(),
                         Status = SpiderEnum.PrimaryStatus.NoneSpider
                     });
                 }
             }
 
-            if (primaryWebSiteList.Any())
-                DBOperationService.InsertPrimaryWebSite(primaryWebSiteList);
+            int pageIndex = 0;
+            int PageSize = 10;
+            while (primaryWebSiteList.Count > (pageIndex * PageSize) * PageSize)
+            {
+                DBOperationService.InsertPrimaryWebSite(primaryWebSiteList.Skip(pageIndex * PageSize).Take(PageSize).ToList());
+                pageIndex++;
+            }
         }
 
         /// <summary>
@@ -71,14 +76,14 @@ namespace Tools.WinForm.Controller
         /// </summary>
         /// <param name="Html"></param>
         /// <param name="WebSiteUrl"></param>
-        public static ResultModel<List<string>> HtmlProcess(string Html, string WebSiteUrl, ref string Title, ref int Weights)
+        public static ResultModel<List<string>> HtmlProcess(string Html, string WebSiteUrl, int Level, ref string Title, ref int Weights)
         {
             ResultModel<List<string>> resultModel = new ResultModel<List<string>>();
             resultModel.Result = false;
             resultModel.Data = new List<string>();
             var titile = SpiderService.GetTitle(Html);//标题
             Title = titile;
-            if ((_isFilterTitle && ValidateContent(titile)) || (_isFilterUrl && ValidateContent(WebSiteUrl)))
+            if ((_isFilterTitle && ValidateContent(titile)) || (_isFilterUrl && ValidateContent(WebSiteUrl)) || Level == 0)
             {
                 Weights = SpiderService.GetWeights(WebSiteUrl);//权重
                 var linkResult = SpiderService.GetLinks(Html);//获取所有网页中的合法链接
