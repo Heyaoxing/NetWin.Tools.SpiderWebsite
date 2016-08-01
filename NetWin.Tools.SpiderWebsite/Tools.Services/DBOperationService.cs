@@ -95,15 +95,24 @@ namespace Tools.Services
         /// 插入种子地址数据
         /// </summary>
         /// <param name="model"></param>
-        public static ResultModel InsertPrimaryWebSite(PrimaryWebSiteModel model)
+        public static ResultModel InsertPrimaryWebSite(List<PrimaryWebSiteModel> models)
         {
             ResultModel resultModel = new ResultModel();
             resultModel.Result = false;
+            if (models == null && !models.Any())
+            {
+                resultModel.Message = "无种子地址值!";
+            }
             try
             {
-                string sql = string.Format("INSERT INTO T_Primary_WebSites(WebSite_Url,Level,Status,create_time,is_erased,Source_ID)SELECT '{0}',{1},{2},'{3}',{4},{5} FROM DUAL where NOT EXISTS(SELECT 1 FROM T_Primary_WebSites WHERE WebSite_Url='{0}') and NOT EXISTS(SELECT 1 FROM T_Exclude_WebSites WHERE WebSite_Url='{0}') LIMIT 1;",
-                        model.WebSiteUrl, model.Level, (int)model.Status, DateTime.Now, 0, model.SourceID);
-                Shove.Database.MySQL.ExecuteNonQuery(sql);
+                StringBuilder sb=new StringBuilder();
+                foreach (var model in models)
+                {
+                    sb.AppendFormat(
+                        "INSERT INTO T_Primary_WebSites(WebSite_Url,Level,Status,create_time,is_erased,Source_ID)SELECT '{0}',{1},{2},'{3}',{4},{5} FROM DUAL where NOT EXISTS(SELECT 1 FROM T_Primary_WebSites WHERE WebSite_Url='{0}') and NOT EXISTS(SELECT 1 FROM T_Exclude_WebSites WHERE WebSite_Url='{0}') LIMIT 1;",
+                        model.WebSiteUrl, model.Level, (int) model.Status, DateTime.Now, 0, model.SourceID);
+                }
+                Shove.Database.MySQL.ExecuteNonQuery(sb.ToString());
                 resultModel.Result = true;
             }
             catch (Exception ex)

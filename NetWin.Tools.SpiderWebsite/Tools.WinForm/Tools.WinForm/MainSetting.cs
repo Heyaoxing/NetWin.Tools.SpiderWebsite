@@ -151,33 +151,62 @@ namespace Tools.WinForm
                 return;
             }
 
-
-            var primaryUrl = this.PrimaryUrl_Text.Text;
-            if (string.IsNullOrWhiteSpace(primaryUrl))
+            var primaryUrlString = this.PrimaryUrl_Text.Text;
+            if (string.IsNullOrWhiteSpace(primaryUrlString))
                 return;
 
-            var isExistsResult = DBOperationService.IsExistsPrimaryWebSite(primaryUrl);
-            if (isExistsResult.Result)
+            try
             {
-                MessageBox.Show(isExistsResult.Message);
-                return;
-            }
+                string error = string.Empty;
+                string tip = string.Empty;
+                var primaryUrls = primaryUrlString.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-            var insertResult = DBOperationService.InsertPrimaryWebSite(new PrimaryWebSiteModel()
-               {
-                   WebSiteUrl = primaryUrl.Trim(),
-                   SourceID = 0,
-                   Level = 0,
-                   Status = SpiderEnum.PrimaryStatus.NoneSpider
-               });
+                foreach (var item in primaryUrls)
+                {
+                  var isExistsesult=  DBOperationService.IsExistsPrimaryWebSite(item);
+                    if (isExistsesult.Result)
+                    {
+                        tip += item + ":" + isExistsesult.Message + "\n";
+                    }
+                }
 
-            if (insertResult.Result)
-            {
-                RefreshPrimaryWebSites();
+                int pageIndex = 0;
+                int pageSize = 10;
+                List<PrimaryWebSiteModel> primaryWebSites = new List<PrimaryWebSiteModel>();
+                while (primaryUrls.Count > pageIndex * pageSize)
+                {
+                    primaryWebSites.Clear();
+                    primaryUrls.Skip(pageIndex*pageSize).Take(pageSize).ToList().ForEach(p =>
+                    {
+                        primaryWebSites.Add(new PrimaryWebSiteModel()
+                        {
+                            WebSiteUrl = p.Trim(),
+                            SourceID = 0,
+                            Level = 0,
+                            Status = SpiderEnum.PrimaryStatus.NoneSpider
+                        });
+                    });
+                    var insertResult = DBOperationService.InsertPrimaryWebSite(primaryWebSites);
+                    if (!insertResult.Result)
+                    {
+                        error += insertResult.Message;
+                    }
+                   
+                    pageIndex++;
+                }
+
+                if (!string.IsNullOrWhiteSpace(error))
+                    MessageBox.Show(error);
+
+                if (!string.IsNullOrWhiteSpace(tip))
+                    MessageBox.Show(tip);
+
+                  RefreshPrimaryWebSites();//刷新列表
+
             }
-            else
+            catch (Exception exception)
             {
-                MessageBox.Show(insertResult.Message);
+                MessageBox.Show(exception.Message);
             }
         }
 
@@ -320,6 +349,12 @@ namespace Tools.WinForm
                     {
                         try
                         {
+                            p.WebSiteUrl = p.WebSiteUrl.TrimEnd('/') + '/';
+                            if (!p.WebSiteUrl.StartsWith("http"))
+                            {
+                                p.WebSiteUrl = "http://" + p.WebSiteUrl;
+                            }
+
                             var htmlResult = SpiderService.GetHtml(p.WebSiteUrl);
                             if (htmlResult.Result)
                             {
@@ -333,7 +368,6 @@ namespace Tools.WinForm
                                 if (processResult.Result)
                                 {
                                     primarydiDictionary.GetOrAdd(p.ID, processResult.Data);
-
                                     targetDictionary.Add(new TargetWebSiteModel()
                                     {
                                         PrimaryID = p.ID,

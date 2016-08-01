@@ -17,14 +17,14 @@ namespace Tools.WinForm.Controller
     public class SpiderController
     {
 
-     
-       
+
+
 
         private static Dictionary<SpiderEnum.FilterType, List<string>> _filterRule = new Dictionary<SpiderEnum.FilterType, List<string>>();
         private static bool _isFilterTitle = false;//是否筛选标题
         private static bool _isFilterUrl = false;//是否筛选网址
 
- 
+
 
 
 
@@ -34,19 +34,23 @@ namespace Tools.WinForm.Controller
         /// <param name="concurrent"></param>
         public static void BatchInsertPrimaryWebSites(ConcurrentDictionary<int, List<string>> concurrent, List<PrimaryWebSiteModel> primaryWebSites)
         {
+            List<PrimaryWebSiteModel> primaryWebSiteList = new List<PrimaryWebSiteModel>();
             foreach (var item in concurrent)
             {
                 foreach (var value in item.Value)
                 {
-                    DBOperationService.InsertPrimaryWebSite(new PrimaryWebSiteModel()
+                    primaryWebSiteList.Add(new PrimaryWebSiteModel()
                     {
                         SourceID = item.Key,
                         WebSiteUrl = value,
-                        Level = primaryWebSites.Where(p => p.ID == item.Key).Select(p => p.Level + 1).FirstOrDefault(),
+                        Level = primaryWebSiteList.Where(p => p.ID == item.Key).Select(p => p.Level + 1).FirstOrDefault(),
                         Status = SpiderEnum.PrimaryStatus.NoneSpider
                     });
                 }
             }
+
+            if (primaryWebSiteList.Any())
+                DBOperationService.InsertPrimaryWebSite(primaryWebSiteList);
         }
 
         /// <summary>
@@ -67,7 +71,7 @@ namespace Tools.WinForm.Controller
         /// </summary>
         /// <param name="Html"></param>
         /// <param name="WebSiteUrl"></param>
-        public static ResultModel<List<string>> HtmlProcess(string Html, string WebSiteUrl, ref string Title,ref int Weights)
+        public static ResultModel<List<string>> HtmlProcess(string Html, string WebSiteUrl, ref string Title, ref int Weights)
         {
             ResultModel<List<string>> resultModel = new ResultModel<List<string>>();
             resultModel.Result = false;
@@ -83,7 +87,7 @@ namespace Tools.WinForm.Controller
                     string host = SpiderService.GetHost(item);
 
 
-                    if (!string.IsNullOrWhiteSpace(host))
+                    if (!string.IsNullOrWhiteSpace(host) && item != WebSiteUrl)
                         resultModel.Data.Add(host); //域名
                 }
 

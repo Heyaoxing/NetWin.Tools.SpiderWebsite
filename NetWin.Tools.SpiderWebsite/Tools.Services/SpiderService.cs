@@ -88,7 +88,7 @@ namespace Tools.Services
 
             return bytes.ToArray();
         }
-        
+
         /// <summary>
         /// 转化为流
         /// </summary>
@@ -127,7 +127,10 @@ namespace Tools.Services
             try
             {
                 var reg = new Regex(@"https?://(.*?)($|/)", RegexOptions.IgnoreCase);
-                return reg.Match(Url).Value;
+                string host = reg.Match(Url).Value;
+                if (!string.IsNullOrWhiteSpace(host))
+                    host = host.TrimEnd('/') + "/";
+                return host;
             }
             catch (Exception ex)
             {
@@ -142,7 +145,7 @@ namespace Tools.Services
         /// <returns></returns>
         public static string GetTitle(string Html)
         {
-            var reg = new Regex(@"<title[^>]*?>(.*)<\/title>", RegexOptions.IgnoreCase);
+            var reg = new Regex(@"<title[^>]*?>(.*)<\/title>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
             return reg.Match(Html).Groups[1].Value;
         }
 
@@ -185,16 +188,18 @@ namespace Tools.Services
         public static int GetWeights(string url)
         {
             int weights = -1;
+            WebClient client = new WebClient();
             try
             {
-                var html = GetHtml(string.Format(BAIDUPRZZAPI, url));
-                if (html.Result)
-                {
-                    weights = Int32.Parse(html.Data);
-                }
+                var html = client.DownloadString(string.Format(BAIDUPRZZAPI, url));
+                weights = Int32.Parse(html);
             }
             catch (Exception exception)
             {
+            }
+            finally
+            {
+                client.Dispose();
             }
             return weights;
         }
