@@ -33,7 +33,7 @@ namespace Tools.Services
             try
             {
                 wrt = (HttpWebRequest)WebRequest.Create(URL);
-                wrt.Timeout = 5 * 1000;//5秒超时
+                wrt.Timeout = 30 * 1000;//30秒超时
                 wrt.Method = "GET"; //请求方法
                 wrt.Accept = "text/html"; //接受的内容
                 wrt.UserAgent = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)"; ; //用户代理
