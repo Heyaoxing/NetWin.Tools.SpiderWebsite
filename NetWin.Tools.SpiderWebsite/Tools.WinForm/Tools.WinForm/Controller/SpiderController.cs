@@ -51,7 +51,7 @@ namespace Tools.WinForm.Controller
 
             int pageIndex = 0;
             int PageSize = 10;
-            while (primaryWebSiteList.Count > (pageIndex * PageSize) * PageSize)
+            while (primaryWebSiteList.Count > pageIndex * PageSize)
             {
                 DBOperationService.InsertPrimaryWebSite(primaryWebSiteList.Skip(pageIndex * PageSize).Take(PageSize).ToList());
                 pageIndex++;

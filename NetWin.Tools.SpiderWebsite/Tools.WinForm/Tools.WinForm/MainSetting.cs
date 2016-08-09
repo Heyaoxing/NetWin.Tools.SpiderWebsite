@@ -218,7 +218,7 @@ namespace Tools.WinForm
             this.PrimaryUrl_ListView.BeginUpdate();   //数据更新，UI暂时挂起，直到EndUpdate绘制控件，可以有效避免闪烁并大大提高加载速度  
             int level = Int32.Parse(this.Level_Text.Text);
             this.PrimaryUrl_ListView.Items.Clear();
-            var primaryWebSites = DBOperationService.GetPrimaryWebSites(level);
+            var primaryWebSites = DBOperationService.GetPrimaryWebSites(level+1);
             if (primaryWebSites.Result)
             {
                 foreach (var item in primaryWebSites.Data)
@@ -342,7 +342,7 @@ namespace Tools.WinForm
                 targetDictionary = null;
                 targetDictionary = new ConcurrentBag<TargetWebSiteModel>();
 
-                var primaryWebSites = DBOperationService.GetPrimaryWebSites(Level, 0, PAGESIZE);
+                var primaryWebSites = DBOperationService.GetPrimaryWebSites(Level+1, 0, PAGESIZE);
                 if (primaryWebSites.Result)
                 {
                     Parallel.ForEach(primaryWebSites.Data, p =>
@@ -527,7 +527,7 @@ namespace Tools.WinForm
                 return;
             }
             this.PrimaryCount_Label.Text =
-                DBOperationService.GetPrimaryWebSiteCount(Int32.Parse(this.Level_Text.Text)).ToString();
+                DBOperationService.GetPrimaryWebSiteCount(Int32.Parse(this.Level_Text.Text)+1).ToString();
         }
 
         /// <summary>
