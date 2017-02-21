@@ -82,6 +82,9 @@ namespace Tools.WinForm.Controller
             resultModel.Result = false;
             resultModel.Data = new List<string>();
             var titile = SpiderService.GetTitle(Html);//标题
+            if (!string.IsNullOrEmpty(titile) && titile.Length > 100)
+                titile = titile.Substring(0, 100);
+
             Title = titile;
             if ((_isFilterTitle && ValidateContent(titile)) || (_isFilterUrl && ValidateContent(WebSiteUrl)) || Level == 0)
             {
@@ -90,8 +93,6 @@ namespace Tools.WinForm.Controller
                 foreach (var item in linkResult.Data)
                 {
                     string host = SpiderService.GetHost(item);
-
-
                     if (!string.IsNullOrWhiteSpace(host) && item != WebSiteUrl)
                         resultModel.Data.Add(host); //域名
                 }

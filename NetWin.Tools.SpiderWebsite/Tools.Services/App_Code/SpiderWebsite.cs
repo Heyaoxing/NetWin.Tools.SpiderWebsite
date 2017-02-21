@@ -29,10 +29,10 @@ namespace SpiderWebsite.DAL
             public MySQL.Field ID;
             public MySQL.Field Source_ID;
             public MySQL.Field WebSite_Url;
+            public MySQL.Field Master_Host;
             public MySQL.Field Level;
             public MySQL.Field Status;
             public MySQL.Field create_time;
-            public MySQL.Field is_erased;
 
             public t_primary_websites()
             {
@@ -41,10 +41,10 @@ namespace SpiderWebsite.DAL
                 ID = new MySQL.Field(this, "ID", "ID", MySqlDbType.Int64, true);
                 Source_ID = new MySQL.Field(this, "Source_ID", "Source_ID", MySqlDbType.Int64, false);
                 WebSite_Url = new MySQL.Field(this, "WebSite_Url", "WebSite_Url", MySqlDbType.VarChar, false);
+                Master_Host = new MySQL.Field(this, "Master_Host", "Master_Host", MySqlDbType.VarChar, false);
                 Level = new MySQL.Field(this, "Level", "Level", MySqlDbType.Int32, false);
                 Status = new MySQL.Field(this, "Status", "Status", MySqlDbType.Int32, false);
                 create_time = new MySQL.Field(this, "create_time", "create_time", MySqlDbType.DateTime, false);
-                is_erased = new MySQL.Field(this, "is_erased", "is_erased", MySqlDbType.Int16, false);
             }
         }
 
@@ -55,7 +55,6 @@ namespace SpiderWebsite.DAL
             public MySQL.Field Filter_Type;
             public MySQL.Field Filter_Position;
             public MySQL.Field create_time;
-            public MySQL.Field is_erased;
 
             public t_filter_rule_configuration()
             {
@@ -66,7 +65,6 @@ namespace SpiderWebsite.DAL
                 Filter_Type = new MySQL.Field(this, "Filter_Type", "Filter_Type", MySqlDbType.Int32, false);
                 Filter_Position = new MySQL.Field(this, "Filter_Position", "Filter_Position", MySqlDbType.Int32, false);
                 create_time = new MySQL.Field(this, "create_time", "create_time", MySqlDbType.DateTime, false);
-                is_erased = new MySQL.Field(this, "is_erased", "is_erased", MySqlDbType.Int16, false);
             }
         }
 
@@ -76,7 +74,6 @@ namespace SpiderWebsite.DAL
             public MySQL.Field WebSite_Name;
             public MySQL.Field WebSite_Url;
             public MySQL.Field create_time;
-            public MySQL.Field is_erased;
 
             public t_exclude_websites()
             {
@@ -86,7 +83,6 @@ namespace SpiderWebsite.DAL
                 WebSite_Name = new MySQL.Field(this, "WebSite_Name", "WebSite_Name", MySqlDbType.VarChar, false);
                 WebSite_Url = new MySQL.Field(this, "WebSite_Url", "WebSite_Url", MySqlDbType.VarChar, false);
                 create_time = new MySQL.Field(this, "create_time", "create_time", MySqlDbType.DateTime, false);
-                is_erased = new MySQL.Field(this, "is_erased", "is_erased", MySqlDbType.Int16, false);
             }
         }
 
@@ -97,6 +93,7 @@ namespace SpiderWebsite.DAL
             public MySQL.Field Primary_ID;
             public MySQL.Field WebSite_Name;
             public MySQL.Field WebSite_Url;
+            public MySQL.Field Group_Name;
             public MySQL.Field Weights;
             public MySQL.Field create_time;
             public MySQL.Field is_erased;
@@ -109,6 +106,7 @@ namespace SpiderWebsite.DAL
                 Primary_ID = new MySQL.Field(this, "Primary_ID", "Primary_ID", MySqlDbType.Int64, true);
                 WebSite_Name = new MySQL.Field(this, "WebSite_Name", "WebSite_Name", MySqlDbType.VarChar, false);
                 WebSite_Url = new MySQL.Field(this, "WebSite_Url", "WebSite_Url", MySqlDbType.VarChar, false);
+                Group_Name = new MySQL.Field(this, "Group_Name", "Group_Name", MySqlDbType.VarChar, false);
                 Weights = new MySQL.Field(this, "Weights", "Weights", MySqlDbType.Int32, false);
                 create_time = new MySQL.Field(this, "create_time", "create_time", MySqlDbType.DateTime, false);
                 is_erased = new MySQL.Field(this, "is_erased", "is_erased", MySqlDbType.Int16, false);

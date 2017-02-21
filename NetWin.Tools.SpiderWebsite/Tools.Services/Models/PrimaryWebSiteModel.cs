@@ -9,6 +9,20 @@ namespace Tools.Services.Models
     {
         public int ID { set; get; }
         public string WebSiteUrl { set; get; }
+
+        public string MasterHost
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(WebSiteUrl))
+                    return string.Empty;
+                else
+                {
+                   return  Common.Tools.GetMasterHost(WebSiteUrl);
+                }
+            }
+        }
+
         public int SourceID { set; get; }
         public int Level { set; get; }
         public SpiderEnum.PrimaryStatus Status { set; get; }

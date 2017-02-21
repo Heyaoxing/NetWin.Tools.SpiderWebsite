@@ -180,7 +180,7 @@ namespace Tools.WinForm
                     {
                         primaryWebSites.Add(new PrimaryWebSiteModel()
                         {
-                            WebSiteUrl = p.Trim(),
+                            WebSiteUrl = p.Trim().TrimEnd('/'),
                             SourceID = 0,
                             Level = 0,
                             Status = SpiderEnum.PrimaryStatus.NoneSpider
@@ -334,7 +334,7 @@ namespace Tools.WinForm
             ConcurrentDictionary<int, List<string>> primarydiDictionary = new ConcurrentDictionary<int, List<string>>();
             //保存目标站点
             ConcurrentBag<TargetWebSiteModel> targetDictionary;
-
+            DateTime dateNoew=DateTime.Now;
             while (true)
             {
                 this.Invoke(new Action(() => UserdTime(sw.Elapsed)));
@@ -373,7 +373,8 @@ namespace Tools.WinForm
                                             PrimaryID = p.ID,
                                             WebSiteName = title,
                                             WebSiteUrl = p.WebSiteUrl,
-                                            Weights = weights
+                                            Weights = weights,
+                                            Group_Name = dateNoew.ToString("yyyy年MM月dd日HH时mm分ss秒")
                                         });
 
                                     if (p.Level <= Level)
@@ -496,7 +497,7 @@ namespace Tools.WinForm
                             excludeWebSite.Add(new ExcludeWebSiteModel()
                             {
                                 WebSiteName = row["资源平台名字"] != null ? row["资源平台名字"].ToString() : "",
-                                WebSiteUrl = url
+                                WebSiteUrl = url.Trim().TrimEnd('/')
                             });
                         }
                         int count = 0;

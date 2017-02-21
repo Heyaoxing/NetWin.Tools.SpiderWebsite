@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using Tools.Services.Models;
 using System.IO;
+using System.IO.Compression;
 using System.Text.RegularExpressions;
 
 namespace Tools.Services
@@ -33,19 +34,31 @@ namespace Tools.Services
             try
             {
                 wrt = (HttpWebRequest)WebRequest.Create(URL);
-                wrt.Timeout = 30 * 1000;//30秒超时
+                wrt.Timeout =8 * 1000;//8秒超时
                 wrt.Method = "GET"; //请求方法
                 wrt.Accept = "text/html"; //接受的内容
                 wrt.UserAgent = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)"; ; //用户代理
                 wrt.Credentials = CredentialCache.DefaultCredentials;
-                WebResponse wrp;
-                wrp = wrt.GetResponse();
+                WebResponse wrp = (HttpWebResponse)wrt.GetResponse();
 
-                var bytes = StreamToBytes(wrp.GetResponseStream());
+
+                string acceptEncoding = wrp.Headers["Content-Encoding"] ?? ""; //获得压缩格式
+                byte[] bytes;
+                if (acceptEncoding.Contains("gzip"))
+                {
+                    using (GZipStream gzip = new GZipStream(wrp.GetResponseStream(), CompressionMode.Decompress)
+                        )
+                    {
+                        bytes = StreamToBytes(gzip);
+                    }
+                }
+                else
+                {
+                    bytes = StreamToBytes(wrp.GetResponseStream());
+                }
+
 
                 var stream = new StreamReader(BytesToStream(bytes), Encoding.GetEncoding("utf-8"));
-
-
                 string htmlstring = stream.ReadToEnd();
                 var encodingString = GetEncoding(htmlstring);
 
@@ -129,7 +142,7 @@ namespace Tools.Services
                 var reg = new Regex(@"https?://(.*?)($|/)", RegexOptions.IgnoreCase);
                 string host = reg.Match(Url).Value;
                 if (!string.IsNullOrWhiteSpace(host))
-                    host = host.TrimEnd('/') + "/";
+                    host = host.TrimEnd('/');
                 return host;
             }
             catch (Exception ex)
@@ -145,7 +158,7 @@ namespace Tools.Services
         /// <returns></returns>
         public static string GetTitle(string Html)
         {
-            var reg = new Regex(@"<title[^>]*?>(.*)<\/title>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            var reg = new Regex(@"<title[^>]*?>(.*?)<\/title>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
             return reg.Match(Html).Groups[1].Value;
         }
 
@@ -168,7 +181,7 @@ namespace Tools.Services
                     foreach (var link in m)
                     {
                         if (UrlAvailable(link.ToString()))
-                            resultModel.Data.Add(link.ToString().Trim());
+                            resultModel.Data.Add(link.ToString().Trim().TrimEnd('/'));
                     }
             }
             catch (Exception exception)
@@ -211,9 +224,9 @@ namespace Tools.Services
         /// <returns></returns>
         private static bool UrlAvailable(string url)
         {
-            if (url.Contains(".jpg") || url.Contains(".gif")
-                || url.Contains(".png") || url.Contains(".css")
-                || url.Contains(".js"))
+            if (string.IsNullOrWhiteSpace(url) || url.Contains(".jpg") || url.Contains(".gif") || url.Contains(".gif")
+                || url.Contains(".png") || url.Contains(".css") || url.Contains(".txt") || url.Contains(".bng")
+                || url.Contains(".js") || url.Contains(".ioc") || url.Contains(".swf") || url.Contains(".zip"))
             {
                 return false;
             }

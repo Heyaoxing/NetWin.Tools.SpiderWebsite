@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Code\SpiderWebsite.cs" />
+    <Compile Include="Common\Tools.cs" />
     <Compile Include="DBOperationService.cs" />
     <Compile Include="Enum\IEnum.cs" />
     <Compile Include="Enum\SpiderEnum.cs" />

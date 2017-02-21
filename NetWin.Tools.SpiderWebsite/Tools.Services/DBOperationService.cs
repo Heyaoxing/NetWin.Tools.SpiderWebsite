@@ -109,8 +109,8 @@ namespace Tools.Services
                 foreach (var model in models)
                 {
                     sb.AppendFormat(
-                        "INSERT INTO T_Primary_WebSites(WebSite_Url,Level,Status,create_time,is_erased,Source_ID)SELECT '{0}',{1},{2},'{3}',{4},{5} FROM DUAL where NOT EXISTS(SELECT 1 FROM T_Primary_WebSites WHERE WebSite_Url='{0}') and NOT EXISTS(SELECT 1 FROM T_Exclude_WebSites WHERE WebSite_Url='{0}') LIMIT 1;",
-                        model.WebSiteUrl, model.Level, (int) model.Status, DateTime.Now, 0, model.SourceID);
+                        "INSERT INTO T_Primary_WebSites(WebSite_Url,Level,Status,create_time,Source_ID,Master_Host)SELECT '{0}',{1},{2},'{3}',{4},'{5}' FROM DUAL where NOT EXISTS(SELECT 1 FROM T_Primary_WebSites WHERE Master_Host='{5}') and NOT EXISTS(SELECT 1 FROM T_Exclude_WebSites WHERE WebSite_Url='{0}') LIMIT 1;",
+                        model.WebSiteUrl, model.Level, (int)model.Status, DateTime.Now, model.SourceID, model.MasterHost);
                 }
                 Shove.Database.MySQL.ExecuteNonQuery(sb.ToString());
                 resultModel.Result = true;
@@ -257,8 +257,8 @@ namespace Tools.Services
             resultModel.Result = false;
             try
             {
-                string sql = string.Format("insert into T_Filter_Rule_Configuration(Filter_KeyWord,Filter_Type,Filter_Position,create_time,is_erased)values('{0}',{1},{2},'{3}',{4})"
-             , model.FilterKeyWord, model.FilterType, (int)model.FilterPosition, DateTime.Now, 0);
+                string sql = string.Format("insert into T_Filter_Rule_Configuration(Filter_KeyWord,Filter_Type,Filter_Position,create_time)values('{0}',{1},{2},'{3}')"
+             , model.FilterKeyWord, model.FilterType, (int)model.FilterPosition, DateTime.Now);
                 Shove.Database.MySQL.ExecuteNonQuery(sql);
                 resultModel.Result = true;
             }
@@ -341,8 +341,8 @@ namespace Tools.Services
         /// <param name="model"></param>
         public static void InsertTargetWebSite(TargetWebSiteModel model)
         {
-            string sql = string.Format("insert into T_Target_WebSites(Primary_ID,WebSite_Name,WebSite_Url,Weights,create_time,is_erased)SELECT {0},'{1}','{2}',{3},'{4}',{5}  FROM DUAL where NOT EXISTS(SELECT 1 FROM T_Target_WebSites WHERE WebSite_Url='{2}') LIMIT 1;"
-                , model.PrimaryID, model.WebSiteName, model.WebSiteUrl, model.Weights, DateTime.Now, 0);
+            string sql = string.Format("insert into T_Target_WebSites(Primary_ID,WebSite_Name,WebSite_Url,Weights,create_time,Group_Name,is_erased)SELECT {0},'{1}','{2}',{3},'{4}','{5}',{6}  FROM DUAL where NOT EXISTS(SELECT 1 FROM T_Target_WebSites WHERE WebSite_Url='{2}') LIMIT 1;"
+                , model.PrimaryID, model.WebSiteName, model.WebSiteUrl, model.Weights, DateTime.Now, model.Group_Name,0);
             Shove.Database.MySQL.ExecuteNonQuery(sql);
         }
 
@@ -407,8 +407,8 @@ namespace Tools.Services
             resultModel.Result = false;
             try
             {
-                string sql = string.Format("INSERT INTO T_Exclude_WebSites(WebSite_Url,WebSite_Name,create_time,is_erased)SELECT '{0}','{1}','{2}',{3} FROM DUAL where NOT EXISTS (SELECT 1 FROM T_Exclude_WebSites WHERE WebSite_Url='{0}') LIMIT 1;",
-                        model.WebSiteUrl, model.WebSiteName, DateTime.Now, 0);
+                string sql = string.Format("INSERT INTO T_Exclude_WebSites(WebSite_Url,WebSite_Name,create_time)SELECT '{0}','{1}','{2}' FROM DUAL where NOT EXISTS (SELECT 1 FROM T_Exclude_WebSites WHERE WebSite_Url='{0}') LIMIT 1;",
+                        model.WebSiteUrl, model.WebSiteName, DateTime.Now);
                 Shove.Database.MySQL.ExecuteNonQuery(sql);
                 resultModel.Result = true;
             }
@@ -435,7 +435,7 @@ namespace Tools.Services
             {
                 string sql = "delete from T_Primary_WebSites;" +
                        "delete from T_Exclude_WebSites;" +
-                       "delete from T_Target_WebSites;" +
+                //       "delete from T_Target_WebSites;" +
                        "delete from T_Filter_Rule_Configuration;";
                 Shove.Database.MySQL.ExecuteNonQuery(sql);
                 resultModel.Result = true;
